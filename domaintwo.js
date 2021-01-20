@@ -1,24 +1,28 @@
 console.log("Domain two");
 
-const callBackHandler = (message, event) => {
+const callbackHandler = (event, message) => {
     console.log(message);
     event.source.postMessage(JSON.stringify(message), event.origin);
 }
 
 window.onmessage = (event) => {
-
     const payload = JSON.parse(event.data);
 
-    if (payload.handler === "addData") {
-        localStorage.setItem(payload.key, JSON.stringify(payload.value))
-        callBackHandler(`written: key: ${payload.key}, values: ${JSON.stringify(payload.value)}`, event)
-    } else if (payload.handler === "deleteData") {
-        localStorage.removeItem(payload.key);
-        callBackHandler(`removed: ${payload.key}`, event)
-    } else if (payload.handler === "getData") {
-        localStorage.getItem(payload.key)
-        callBackHandler(`read: ${payload.key}`, event)
-    } else (
-        console.log(event)
-    )
+    switch (payload.handler) {
+        case "addData":
+            localStorage.setItem(payload.key, JSON.stringify(payload.value));
+            callbackHandler(event, `written: key: ${payload.key}, values: ${JSON.stringify(payload.value)}`);
+            break;
+        case "deleteData":
+            localStorage.removeItem(payload.key);
+            callbackHandler(event, `removed: ${payload.key}`);
+            break;
+        case "getData":
+            localStorage.getItem(payload.key);
+            callbackHandler(event, `read: ${payload.key}`);
+            break;
+        default:
+            console.log(event);
+            break;
+    }
 }

@@ -13,20 +13,24 @@ const changeDataInLocalStorage = {
 
     setData: (key, value) => {
         const message = JSON.stringify({ key, value, handler: "addData" });
+
         win.postMessage(message, win.window.location.href);
     },
     deleteData: (key) => {
         const message = JSON.stringify({ key, handler: "deleteData" });
+
         win.postMessage(message, win.window.location.href);
     },
     getData: (key) => {
-        const message = JSON.stringify({ key, handler: "getData" })
         const localData = localStorage.getItem(key);
-        if (localData === null) {
-            console.log("Wrong key");
-        } else {
+
+        if (localData) {
             const message = JSON.stringify({ key, handler: "getData" });
+
             win.postMessage(message, win.window.location.href);
+
+        } else {
+            console.log("Wrong key");
         }
     }
 }
